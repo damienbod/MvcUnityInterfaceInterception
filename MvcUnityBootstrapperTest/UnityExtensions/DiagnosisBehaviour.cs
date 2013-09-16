@@ -19,7 +19,7 @@ namespace MvcUnityBootstrapperTest.UnityExtensions
             DiagnosisEvents.Log.MethodEnter(String.Format("[{0}:{1}]", this.GetType().Name, "Invoke"));
 
             // BEFORE the target method execution
-            DiagnosisEvents.Log.LogVerboseMessage(String.Format("{0}", input.MethodBase.ToString()));
+            DiagnosisEvents.Log.LogVerboseMessage(String.Format("{0} {1}", input.MethodBase.ToString(), input.Target.ToString()));
 
             // Yield to the next module in the pipeline
             var methodReturn = getNext().Invoke(input, getNext);
@@ -27,7 +27,7 @@ namespace MvcUnityBootstrapperTest.UnityExtensions
             // AFTER the target method execution
             if (methodReturn.Exception == null)
             {
-                 DiagnosisEvents.Log.MethodLeave(String.Format("Successfully finished {0}", input.MethodBase.ToString()));
+                 DiagnosisEvents.Log.MethodLeave(String.Format("Successfully finished {0} {1}", input.MethodBase.ToString(), input.Target.ToString()));
             }
             else
             {

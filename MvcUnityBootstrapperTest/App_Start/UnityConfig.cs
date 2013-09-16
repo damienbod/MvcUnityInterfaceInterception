@@ -30,29 +30,27 @@ namespace MvcUnityBootstrapperTest.App_Start
         public static void RegisterTypes(IUnityContainer container)
         {
             container.AddNewExtension<Interception>();
-
             container.RegisterTypes(UnityHelpers.GetTypesWithCustomAttribute<UnityIoCPerRequestLifetimeAttribute>(AppDomain.CurrentDomain.GetAssemblies()),
                                     WithMappings.FromMatchingInterface,
                                     WithName.Default,
-                                    PerRequest
-                                )
+                                    PerRequest,
+                                    getInjectionMembers: t => new InjectionMember[]
+                                    {
+                                        new Interceptor<InterfaceInterceptor>(),
+                                        new InterceptionBehavior<MvcUnityBootstrapperTest.UnityExtensions.DiagnosisBehaviour>()
+                                    })
                      .RegisterTypes(UnityHelpers.GetTypesWithCustomAttribute<UnityIoCTransientLifetimeAttribute>(AppDomain.CurrentDomain.GetAssemblies()),
                                     WithMappings.FromMatchingInterface,
                                     WithName.Default,
                                     WithLifetime.Transient
                                 );
-    
-            DiagnosisBehaviour d = new DiagnosisBehaviour();
 
-            container.AddNewExtension<Interception>();
+            // Single InterfaceInterceptor
+            // DiagnosisBehaviour d = new DiagnosisBehaviour();
+            //  container.RegisterType<IBusinessClass2>(
+            //    new InterceptionBehavior(d),
+            //    new Interceptor(new InterfaceInterceptor()));
 
-            container.RegisterType<IBusinessClass2>(
-                new InterceptionBehavior(d),
-                new Interceptor(new InterfaceInterceptor()));
-
-            container.RegisterType<IBusinessClass>(
-                new InterceptionBehavior(d),
-                new Interceptor(new InterfaceInterceptor()));
 
             // This method checks and for classes from Loaded Assemblies and creates a per request lifetime object for classes with the custom attribute 
             //container.RegisterTypes(AllClasses.FromLoadedAssemblies(),
